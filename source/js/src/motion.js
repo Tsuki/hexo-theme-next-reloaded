@@ -105,6 +105,10 @@ $(document).ready(function () {
         .on('sidebar.isHiding', function () {
         });
     },
+    reloadSidebar: function () {
+      this.sidebarEl = $('.sidebar');
+      this.isSidebarVisible ? this.showSidebar() : null;
+    },
     clickHandler: function () {
       this.isSidebarVisible ? this.hideSidebar() : this.showSidebar();
       this.isSidebarVisible = !this.isSidebarVisible;
@@ -129,14 +133,13 @@ $(document).ready(function () {
       var _xPos = e.originalEvent.changedTouches[0].clientX;
       var _yPos = e.originalEvent.changedTouches[0].clientY;
       if (_xPos-xPos > 30 && Math.abs(_yPos-yPos) < 20) {
-          this.clickHandler();
+        this.clickHandler();
       }
     },
     showSidebar: function () {
       var self = this;
 
       sidebarToggleLines.close();
-
       this.sidebarEl.velocity('stop').velocity({
           width: SIDEBAR_WIDTH
         }, {
@@ -183,8 +186,7 @@ $(document).ready(function () {
       }
     }
   };
-  sidebarToggleMotion.init();
-
+  // sidebarToggleMotion.init();
   NexT.motion.integrator = {
     queue: [],
     cursor: -1,
@@ -199,10 +201,22 @@ $(document).ready(function () {
     },
     bootstrap: function () {
       this.next();
+    },
+    reset: function (value) {
+      this.cursor = value === undefined ? -1 : value;
     }
   };
 
   NexT.motion.middleWares =  {
+    sidebarToggle: function (integrator) {
+      sidebarToggleMotion.init();
+      integrator.next();
+    },
+    reload: function (integrator) {
+      sidebarToggleMotion.reloadSidebar();
+      integrator.next();
+    },
+
     logo: function (integrator) {
       var sequence = [];
       var $brand = $('.brand');
@@ -310,9 +324,9 @@ $(document).ready(function () {
 
       function postMotion () {
         var postMotionOptions = window.postMotionOptions || {
-            stagger: 100,
-            drag: true
-          };
+          stagger: 100,
+          drag: true
+        };
         postMotionOptions.complete = function () {
           // After motion complete need to remove transform from sidebar to let affix work on Pisces | Gemini.
           if (CONFIG.motion.transition.sidebar && (NexT.utils.isPisces() || NexT.utils.isGemini())) {

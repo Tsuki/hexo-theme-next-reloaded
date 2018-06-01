@@ -3,35 +3,36 @@
 $(document).ready(function () {
 
   initScrollSpy();
-
-  function initScrollSpy () {
-    var tocSelector = '.post-toc';
-    var $tocElement = $(tocSelector);
-    var activeCurrentSelector = '.active-current';
-
-    $tocElement
-      .on('activate.bs.scrollspy', function () {
-        var $currentActiveElement = $(tocSelector + ' .active').last();
-
-        removeCurrentActiveClass();
-        $currentActiveElement.addClass('active-current');
-
-        // Scrolling to center active TOC element if TOC content is taller then viewport.
-        $tocElement.scrollTop($currentActiveElement.offset().top - $tocElement.offset().top + $tocElement.scrollTop() - ($tocElement.height() / 2));
-      })
-      .on('clear.bs.scrollspy', removeCurrentActiveClass);
-
-    $('body').scrollspy({ target: tocSelector });
-
-    function removeCurrentActiveClass () {
-      $(tocSelector + ' ' + activeCurrentSelector)
-        .removeClass(activeCurrentSelector.substring(1));
-    }
-  }
-
+  initToc();
 });
 
-$(document).ready(function () {
+function initScrollSpy () {
+  var tocSelector = '.post-toc';
+  var $tocElement = $(tocSelector);
+  var activeCurrentSelector = '.active-current';
+
+  $tocElement
+    .on('activate.bs.scrollspy', function () {
+      var $currentActiveElement = $(tocSelector + ' .active').last();
+
+      removeCurrentActiveClass();
+      $currentActiveElement.addClass('active-current');
+
+      // Scrolling to center active TOC element if TOC content is taller then viewport.
+      $tocElement.scrollTop($currentActiveElement.offset().top - $tocElement.offset().top + $tocElement.scrollTop() - ($tocElement.height() / 2));
+    })
+    .on('clear.bs.scrollspy', removeCurrentActiveClass);
+
+  $('body').scrollspy({ target: tocSelector });
+
+  function removeCurrentActiveClass () {
+    $(tocSelector + ' ' + activeCurrentSelector)
+      .removeClass(activeCurrentSelector.substring(1));
+  }
+}
+
+
+function initToc() {
   var html = $('html');
   var TAB_ANIMATE_DURATION = 200;
   var hasVelocity = $.isFunction(html.velocity);
@@ -90,8 +91,7 @@ $(document).ready(function () {
   var display = CONFIG.page.sidebar;
   if (typeof display !== 'boolean') {
     // There's no definition sidebar in the page front-matter
-    var isSidebarCouldDisplay = CONFIG.sidebar.display === 'post' ||
-      CONFIG.sidebar.display === 'always';
+    var isSidebarCouldDisplay = CONFIG.sidebar.display === 'always';
     var hasTOC = $tocContent.length > 0 && $tocContent.html().trim().length > 0;
     display = isSidebarCouldDisplay && hasTOC;
   }
@@ -101,4 +101,4 @@ $(document).ready(function () {
           NexT.utils.displaySidebar();
       }) : NexT.utils.displaySidebar();
   }
-});
+}
