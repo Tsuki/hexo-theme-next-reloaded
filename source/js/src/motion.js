@@ -208,7 +208,7 @@ $(document).ready(function () {
   };
 
   NexT.motion.middleWares =  {
-    sidebarToggle: function (integrator) {
+    sidebarInit: function (integrator) {
       sidebarToggleMotion.init();
       integrator.next();
     },
